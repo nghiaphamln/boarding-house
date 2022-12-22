@@ -1,7 +1,11 @@
 module.exports = HandleError = (err, req, res, next) => {
-    res.json({
-        error: err.status !== 200,
-        status: err.status,
-        message: err.message
-    });
+    const { stack, status = 400, message } = err;
+    if (stack) {
+        res.status(status).json({
+            error: true,
+            status,
+            message
+        });
+    }
+    next();
 }
