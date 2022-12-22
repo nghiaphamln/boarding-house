@@ -10,7 +10,10 @@ router.get('/', (req, res, next) => {
 
 router.get('/test-error',async (req, res, next) => {
     try {
-        throw new CustomError('My Error.');
+        let a = 3, b = 4;
+        if (a !== b)
+            throw new CustomError('My Error.');
+
     }
     catch (err) {
         next(err);
