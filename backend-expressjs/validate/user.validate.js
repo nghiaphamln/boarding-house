@@ -1,5 +1,6 @@
 const CommonUtil = require('../utils/common.util');
 const CustomError = require('../exception/customError.exception');
+const User = require('../models/user.model');
 
 const NAME_INVALID = 'Tên không hợp lệ';
 const USERNAME_INVALID = 'Tài khoản không hợp lệ';
@@ -37,10 +38,18 @@ class UserValidate {
         const {name, username, password} = userInfo;
         let error = {};
 
-        if (!name || !NAME_REGEX.test(name)) error.name = NAME_INVALID;
-        if (!this.ValidateUsername(username)) error.username = USERNAME_INVALID;
-        if (!this.ValidatePassword(password)) error.password = PASSWORD_INVALID;
-
+        if (!name || !NAME_REGEX.test(name)) {
+            error.name = NAME_INVALID;
+        }
+        if (!this.ValidateUsername(username)) {
+            error.username = USERNAME_INVALID;
+        }
+        else if (await User.findOne({username})) {
+            error.username = USERNAME_EXISTS_INVALID;
+        }
+        if (!this.ValidatePassword(password)) {
+            error.password = PASSWORD_INVALID;
+        }
         if (!CommonUtil.isEmpty(error)) throw new CustomError(error);
         return {name, username, password};
     }
