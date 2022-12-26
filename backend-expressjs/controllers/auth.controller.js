@@ -11,6 +11,23 @@ class AuthController {
             next(err);
         }
     }
+
+    // [POST] /auth/login
+    Login = async (req, res, next) => {
+        const { username, password } = req.body;
+        const source = req.headers['user-agent'];
+
+        try {
+            const { token, refreshToken } = await AuthService.Login(
+                username,
+                password,
+                source
+            );
+            res.json({token, refreshToken});
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 module.exports = new AuthController();

@@ -53,6 +53,11 @@ class UserValidate {
         if (!CommonUtil.IsEmpty(error)) throw new CustomError(error);
         return {name, username, password};
     }
+
+    ValidateLogin = (username, password) => {
+        if (!this.ValidateUsername(username) || !this.ValidatePassword(password))
+            throw new CustomError('Info login invalid.');
+    }
 }
 
 module.exports = new UserValidate();
