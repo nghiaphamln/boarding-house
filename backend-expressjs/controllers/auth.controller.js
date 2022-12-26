@@ -28,6 +28,18 @@ class AuthController {
             next(err);
         }
     }
+
+    // [POST] /auth/refresh-token
+    RefreshToken = async (req, res, next) => {
+        let {refreshToken} = req.body,
+            source = req.headers['user-agent'];
+        try {
+            const token = await AuthService.RefreshToken(refreshToken, source);
+            res.json({token});
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 module.exports = new AuthController();

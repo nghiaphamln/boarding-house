@@ -30,6 +30,15 @@ const userSchema = new Schema(
             type: Date,
             Default: new Date('2000-01-01')
         },
+        refreshTokens: {
+            type: [
+                {
+                    token: String,
+                    source: String,
+                },
+            ],
+            default: [],
+        },
         isActivated: {
             type: Boolean,
             default: true
