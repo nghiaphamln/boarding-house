@@ -14,7 +14,7 @@ class UserValidate {
     ValidateEmail = (email) => {
         if (!email) return false;
         const regex =
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return regex.test(email.toString().toLowerCase());
     }
 
@@ -50,7 +50,7 @@ class UserValidate {
         if (!this.ValidatePassword(password)) {
             error.password = PASSWORD_INVALID;
         }
-        if (!CommonUtil.isEmpty(error)) throw new CustomError(error);
+        if (!CommonUtil.IsEmpty(error)) throw new CustomError(error);
         return {name, username, password};
     }
 }

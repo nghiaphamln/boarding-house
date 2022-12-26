@@ -1,7 +1,7 @@
 const AuthService = require('../services/auth.service');
 
 class AuthController {
-    // [POST] /register
+    // [POST] /auth/register
     Register = async (req, res, next) => {
         try {
             await AuthService.Register(req.body);
