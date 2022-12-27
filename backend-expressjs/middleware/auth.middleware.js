@@ -11,6 +11,7 @@ module.exports = Auth = async (req, res, next) => {
         let user;
         if(await RedisCache.Exists(keyCache)) {
             user = await RedisCache.Get(keyCache);
+            console.log("Đã cache");
         }
         else {
             user = await User.findOne({
@@ -22,6 +23,8 @@ module.exports = Auth = async (req, res, next) => {
             if (user) {
                 await RedisCache.Set(keyCache, user, 300);
             }
+
+            console.log("Chưa cache");
         }
 
         let {timeRevokeToken} = user;
