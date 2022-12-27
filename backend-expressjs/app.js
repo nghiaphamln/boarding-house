@@ -1,6 +1,5 @@
-require('dotenv').config();
-
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const useragent = require('express-useragent');
 const cors = require('cors');
@@ -9,6 +8,9 @@ const {ConnectDatabase} = require('./config/database.config');
 const HandleError = require('./middleware/handleError.middleware');
 const NotFound = require('./middleware/notFound.middleware');
 const Log = require('./middleware/log.middleware');
+
+// require('dotenv').config({path: path.resolve('D:/Project/boarding-house/backend-expressjs/.env')});
+require('dotenv').config();
 
 const app = express();
 

@@ -1,18 +1,28 @@
 const User = require('../models/user.model');
 const TokenUtil = require('../utils/token.util');
-const AuthenError = require('../exception/authenError.exception');
+const RedisCache = require('../app/redis.app');
 
 module.exports = Auth = async (req, res, next) => {
     const source = req.headers['user-agent'];
     try {
         let token = req.header('Authorization').replace('Bearer ', '');
         let data = await TokenUtil.VerifyToken(token);
+        let keyCache = `User:${data._id}`;
+        let user;
+        if(await RedisCache.Exists(keyCache)) {
+            user = await RedisCache.Get(keyCache);
+        }
+        else {
+            user = await User.findOne({
+                _id: data._id,
+                isActivated: true,
+                isDeleted: false,
+            });
 
-        let user = await User.findOne({
-            _id: data._id,
-            isActivated: true,
-            isDeleted: false,
-        });
+            if (user) {
+                await RedisCache.Set(keyCache, user, 300);
+            }
+        }
 
         let {timeRevokeToken} = user;
         let {createdAt} = data;
@@ -24,6 +34,11 @@ module.exports = Auth = async (req, res, next) => {
         req._id = data._id;
         next();
     } catch (error) {
-        throw new AuthenError('Not authorized to access this resource.');
+        console.error(error);
+        res.status(401).send({
+            error: true,
+            status: 401,
+            message: 'Not authorized to access this resource',
+        });
     }
 }
