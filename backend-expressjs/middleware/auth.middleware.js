@@ -28,12 +28,15 @@ module.exports = Auth = async (req, res, next) => {
 
         if (!user || !data.source || source !== data.source || !createdAt || new Date(createdAt) < new Date(timeRevokeToken)) {
             console.log('source !== data.source: ', source !== data.source);
-            throw new Error();
+            res.status(401).send({
+                error: true,
+                status: 401,
+                message: 'Not authorized to access this resource',
+            });
         }
         req._id = data._id;
         next();
     } catch (error) {
-        console.error(error);
         res.status(401).send({
             error: true,
             status: 401,
