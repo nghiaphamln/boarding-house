@@ -1,19 +1,16 @@
 const User = require('../models/user.model');
 const TokenUtil = require('../utils/token.util');
-const RedisCache = require('../app/redis.app');
+const Cache = require('memory-cache');
 
 module.exports = Auth = async (req, res, next) => {
     const source = req.headers['user-agent'];
     try {
         let token = req.header('Authorization').replace('Bearer ', '');
         let data = await TokenUtil.VerifyToken(token);
-        let keyCache = `User:${data._id}`;
-        let user;
-        if(await RedisCache.Exists(keyCache)) {
-            user = await RedisCache.Get(keyCache);
-            console.log("Đã cache");
-        }
-        else {
+
+        let keyCache = `UserInfo:${data._id}`;
+        let user = await Cache.get(keyCache);
+        if (!user) {
             user = await User.findOne({
                 _id: data._id,
                 isActivated: true,
@@ -21,10 +18,9 @@ module.exports = Auth = async (req, res, next) => {
             });
 
             if (user) {
-                await RedisCache.Set(keyCache, user, 300);
+                // cache 5 phút
+                Cache.put(keyCache, user, 5 * 60 * 1000);
             }
-
-            console.log("Chưa cache");
         }
 
         let {timeRevokeToken} = user;
